@@ -293,15 +293,18 @@ img {
 }
 
 /* ─── Mobile Tap Targets ─────────────────────────────────────── */
-button, [role="button"], a, input, label {
+button:not(.no-min-size),
+.btn:not(.no-min-size),
+input[type="button"]:not(.no-min-size),
+input[type="submit"]:not(.no-min-size) {
   min-height: 44px;
   min-width: 44px;
 }
 
 /* Override for decorative elements */
 .no-min-size {
-  min-height: unset;
-  min-width: unset;
+  min-height: unset !important;
+  min-width: unset !important;
 }
 
 /* ─── Zara AI Chat Specific ──────────────────────────────────── */
