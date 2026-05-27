@@ -50,7 +50,7 @@ export async function updateSessionPreferences(
 
   return prisma.session.update({
     where: { id: sessionId },
-    data: { preferences: updatedPrefs },
+    data: { preferences: updatedPrefs as any },
   });
 }
 
@@ -90,7 +90,7 @@ export async function saveMessage(
   metadata: Record<string, unknown> = {}
 ): Promise<void> {
   await prisma.message.create({
-    data: { sessionId, role, content, metadata },
+    data: { sessionId, role, content, metadata: metadata as any },
   });
 }
 

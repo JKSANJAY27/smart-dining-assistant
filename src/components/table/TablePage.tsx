@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UtensilsCrossed, Wifi, Users, Clock, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { MenuGrid } from "@/components/menu/MenuGrid";
 import { getTimeOfDay } from "@/lib/utils";
 
 interface TablePageProps {
@@ -53,7 +54,7 @@ export function TablePage({ tableId }: TablePageProps) {
         }}
       />
 
-      {/* Header */}
+      {/* Sticky Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,7 +66,9 @@ export function TablePage({ tableId }: TablePageProps) {
             <UtensilsCrossed className="w-5 h-5 text-white" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-white leading-none">Spice Garden</h1>
+            <h1 className="text-sm font-bold text-white leading-none">
+              {process.env.NEXT_PUBLIC_RESTAURANT_NAME || "Spice Garden"}
+            </h1>
             <p className="text-[11px] text-[hsl(220,10%,55%)] mt-0.5">AI-Powered Dining</p>
           </div>
         </div>
@@ -81,123 +84,83 @@ export function TablePage({ tableId }: TablePageProps) {
       </motion.header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-4 pt-6 pb-32 max-w-lg mx-auto">
-        {/* Welcome Section */}
-        <AnimatePresence>
-          <motion.section
-            key="welcome"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
-            className="text-center mb-8"
-          >
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-              className="text-5xl mb-3 inline-block"
+      <main className="relative z-10 px-4 pt-4 pb-32 max-w-lg mx-auto">
+        {/* Greeting Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-[hsla(24,95%,53%,0.1)] to-[hsla(340,82%,57%,0.05)] border border-[hsla(24,95%,53%,0.15)] mb-4"
+        >
+          <div className="flex items-center gap-2.5">
+            <motion.span
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
+              className="text-2xl no-min-size"
               aria-hidden="true"
             >
               {greeting.emoji}
-            </motion.div>
-            <h2 className="text-2xl font-bold text-white mb-1">
-              {greeting.text}
-            </h2>
-            <p className="text-[hsl(220,10%,60%)] text-sm">
-              Welcome to <span className="text-orange-400 font-semibold">Spice Garden</span>
-            </p>
-          </motion.section>
-        </AnimatePresence>
-
-        {/* Table Info Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="card-surface p-4 mb-6"
-        >
-          <div className="grid grid-cols-3 divide-x divide-[hsla(220,15%,95%,0.08)]">
-            <div className="flex flex-col items-center gap-1.5 px-2">
-              <div className="w-8 h-8 rounded-lg bg-[hsla(24,95%,53%,0.12)] flex items-center justify-center no-min-size">
-                <UtensilsCrossed className="w-4 h-4 text-orange-400" aria-hidden="true" />
-              </div>
-              <p className="text-xs text-[hsl(220,10%,55%)]">Table</p>
-              <p className="text-sm font-bold text-white">{tableId}</p>
-            </div>
-            <div className="flex flex-col items-center gap-1.5 px-2">
-              <div className="w-8 h-8 rounded-lg bg-[hsla(162,73%,46%,0.12)] flex items-center justify-center no-min-size">
-                <Users className="w-4 h-4 text-emerald-400" aria-hidden="true" />
-              </div>
-              <p className="text-xs text-[hsl(220,10%,55%)]">Guests</p>
-              <p className="text-sm font-bold text-white">1</p>
-            </div>
-            <div className="flex flex-col items-center gap-1.5 px-2">
-              <div className="w-8 h-8 rounded-lg bg-[hsla(45,96%,64%,0.12)] flex items-center justify-center no-min-size">
-                <Clock className="w-4 h-4 text-yellow-400" aria-hidden="true" />
-              </div>
-              <p className="text-xs text-[hsl(220,10%,55%)]">Wait</p>
-              <p className="text-sm font-bold text-white">~15m</p>
+            </motion.span>
+            <div>
+              <p className="text-sm font-bold text-white">{greeting.text}</p>
+              <p className="text-[11px] text-[hsl(220,10%,55%)]">
+                Welcome to{" "}
+                <span className="text-orange-400">
+                  {process.env.NEXT_PUBLIC_RESTAURANT_NAME || "Spice Garden"}
+                </span>
+              </p>
             </div>
           </div>
-        </motion.div>
-
-        {/* Wi-Fi card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex items-center gap-3 p-3 rounded-xl bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.15)] mb-6"
-        >
-          <div className="w-8 h-8 rounded-lg bg-[hsla(217,91%,60%,0.15)] flex items-center justify-center no-min-size shrink-0">
-            <Wifi className="w-4 h-4 text-blue-400" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-blue-400">Free Wi-Fi</p>
-            <p className="text-xs text-[hsl(220,10%,55%)]">
-              Network: <span className="text-white">SpiceGarden_Guest</span> • No password
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Quick Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="grid grid-cols-2 gap-3 mb-6"
-        >
-          <div className="card-surface p-3 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[hsla(24,95%,53%,0.12)] flex items-center justify-center no-min-size shrink-0">
-              <Star className="w-4 h-4 text-orange-400" aria-hidden="true" />
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div>
+              <div className="flex items-center justify-center mb-0.5">
+                <Users className="w-3 h-3 text-emerald-400 no-min-size" />
+              </div>
+              <p className="text-[10px] text-[hsl(220,10%,50%)]">Table</p>
+              <p className="text-xs font-bold text-white">{tableId}</p>
             </div>
             <div>
-              <p className="text-xs text-[hsl(220,10%,55%)]">Rating</p>
-              <p className="text-sm font-bold text-white">4.8 ★</p>
-            </div>
-          </div>
-          <div className="card-surface p-3 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[hsla(162,73%,46%,0.12)] flex items-center justify-center no-min-size shrink-0">
-              <UtensilsCrossed className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+              <div className="flex items-center justify-center mb-0.5">
+                <Clock className="w-3 h-3 text-yellow-400 no-min-size" />
+              </div>
+              <p className="text-[10px] text-[hsl(220,10%,50%)]">Wait</p>
+              <p className="text-xs font-bold text-white">~15m</p>
             </div>
             <div>
-              <p className="text-xs text-[hsl(220,10%,55%)]">Menu Items</p>
-              <p className="text-sm font-bold text-white">60+</p>
+              <div className="flex items-center justify-center mb-0.5">
+                <Star className="w-3 h-3 text-orange-400 no-min-size" fill="currentColor" />
+              </div>
+              <p className="text-[10px] text-[hsl(220,10%,50%)]">Rating</p>
+              <p className="text-xs font-bold text-white">4.8</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Loading State — full menu coming in Phase 3 */}
+        {/* Wi-Fi Banner */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="card-surface p-6 text-center"
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[hsla(217,91%,60%,0.07)] border border-[hsla(217,91%,60%,0.15)] mb-5"
         >
-          <div className="text-3xl mb-3" aria-hidden="true">🍽️</div>
-          <h3 className="font-bold text-white mb-1.5">Menu Loading Soon</h3>
-          <p className="text-sm text-[hsl(220,10%,55%)]">
-            AI-powered menu with Zara is being set up. Phase 3 will bring the full experience!
+          <Wifi className="w-4 h-4 text-blue-400 shrink-0 no-min-size" aria-hidden="true" />
+          <p className="text-xs text-[hsl(220,10%,55%)]">
+            Free Wi-Fi:{" "}
+            <span className="text-white font-medium">SpiceGarden_Guest</span>
+            {" "}· No password
           </p>
         </motion.div>
+
+        {/* Menu Grid */}
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
+          >
+            <MenuGrid tableId={tableId} />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );
