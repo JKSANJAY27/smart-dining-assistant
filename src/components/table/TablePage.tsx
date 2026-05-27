@@ -84,7 +84,8 @@ export function TablePage({ tableId }: TablePageProps) {
       </motion.header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-4 pt-4 pb-32 max-w-lg mx-auto">
+      <div className="w-full flex justify-center">
+        <main className="relative z-10 px-4 pt-6 pb-32 max-w-md md:max-w-4xl lg:max-w-6xl w-full">
         {/* Greeting Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -162,6 +163,7 @@ export function TablePage({ tableId }: TablePageProps) {
           </motion.div>
         </AnimatePresence>
       </main>
+      </div>
     </div>
   );
 }

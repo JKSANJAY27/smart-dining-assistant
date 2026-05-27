@@ -123,7 +123,7 @@ export function MenuGrid({ tableId: _tableId }: MenuGridProps) {
                 Trending now
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-3.5">
               {popularItems.map((item, i) => (
                 <MenuCard key={item.id} item={item} index={i} />
               ))}
@@ -161,7 +161,7 @@ export function MenuGrid({ tableId: _tableId }: MenuGridProps) {
         ) : (
           <motion.div
             layout
-            className="grid grid-cols-2 gap-3"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3.5"
           >
             <AnimatePresence mode="popLayout">
               {filteredItems.map((item, i) => (
