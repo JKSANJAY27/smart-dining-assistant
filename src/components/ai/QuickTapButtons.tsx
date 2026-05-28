@@ -27,7 +27,7 @@ export function QuickTapButtons({ onTap, disabled }: QuickTapButtonsProps) {
           whileTap={{ scale: 0.95 }}
           onClick={() => !disabled && onTap(intent.query)}
           disabled={disabled}
-          className="flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold text-white bg-[hsl(30,12%,10%)] hover:bg-[hsl(30,10%,14%)] border border-[hsla(30,10%,95%,0.06)] hover:border-orange-500/50 transition-all cursor-pointer no-min-size shadow-sm select-none"
+          className="flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold text-stone-600 bg-white border border-stone-200/80 hover:border-orange-400 hover:text-orange-600 transition-all cursor-pointer no-min-size shadow-2xs select-none"
         >
           {intent.label}
         </motion.button>

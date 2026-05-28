@@ -12,23 +12,23 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
   const isStreaming = state === "streaming";
 
   return (
-    <div className="relative w-full h-16 flex items-center justify-center overflow-hidden bg-[hsl(30,12%,10%)] rounded-xl border border-[hsla(30,10%,95%,0.05)] shadow-inner">
+    <div className="relative w-full h-16 flex items-center justify-center overflow-hidden bg-[#FFFDF9] rounded-2xl border border-black/5 shadow-sm">
       {/* Soft background ambient glow */}
       <motion.div
         animate={{
           scale: isThinking ? [1, 1.15, 1] : isStreaming ? [1, 1.25, 1] : [1, 1.05, 1],
-          opacity: isThinking ? 0.25 : isStreaming ? 0.35 : 0.15,
+          opacity: isThinking ? 0.2 : isStreaming ? 0.25 : 0.08,
         }}
         transition={{
           duration: isThinking ? 1.5 : isStreaming ? 1.2 : 3,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-rose-500 blur-xl pointer-events-none"
+        className="absolute w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 blur-xl pointer-events-none"
       />
 
       {/* Pulsing Waveform Lines */}
-      <div className="flex items-center gap-1 z-10">
+      <div className="flex items-center gap-1.5 z-10">
         {[...Array(9)].map((_, i) => {
           // Dynamic calculation of heights and delays
           const baseHeight = 6;
@@ -58,7 +58,7 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
                   ? "from-orange-500 via-rose-500 to-amber-400"
                   : isThinking
                   ? "from-rose-500 to-orange-400"
-                  : "from-[hsl(30,6%,50%)] to-[hsl(30,8%,70%)]"
+                  : "from-amber-400 to-orange-400"
               }`}
             />
           );
@@ -66,11 +66,11 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
       </div>
 
       {/* Captions inside the waveform */}
-      <div className="absolute bottom-1 right-2.5 text-[8px] font-bold tracking-wider text-[hsl(30,8%,50%)] uppercase select-none">
+      <div className="absolute bottom-1 right-3.5 text-[8.5px] font-extrabold tracking-widest text-[#6B7280] uppercase select-none">
         {isStreaming ? (
-          <span className="text-orange-400 animate-pulse">Zara is speaking...</span>
+          <span className="text-orange-500 animate-pulse">Zara is speaking...</span>
         ) : isThinking ? (
-          <span className="text-rose-400 animate-pulse">Thinking...</span>
+          <span className="text-rose-500 animate-pulse">Thinking...</span>
         ) : (
           <span>Zara Sommelier</span>
         )}

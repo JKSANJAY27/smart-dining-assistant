@@ -130,20 +130,20 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       {/* Modal Card */}
-      <div className="relative w-full max-w-md bg-[hsl(30,16%,6%)] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-md bg-white border border-[#F5EFE6] rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
         
         {/* Header (Hidden in Success Step to keep layout sleek) */}
         {step !== "success" && (
-          <div className="px-5 py-4 border-b border-white/5 bg-[hsl(30,12%,10%)]/50 flex justify-between items-center shrink-0">
+          <div className="px-5 py-4 border-b border-[#F5EFE6] bg-[#FAF7F2]/80 flex justify-between items-center shrink-0">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4.5 h-4.5 text-orange-400" />
-              <h2 className="text-sm font-black text-white">Place Culinary Order</h2>
+              <ShoppingBag className="w-4.5 h-4.5 text-[#D97706]" />
+              <h2 className="text-sm font-extrabold text-gray-900">Place Culinary Order</h2>
             </div>
             <button
               onClick={onClose}
-              className="p-1 rounded-lg hover:bg-white/5 text-[hsl(220,10%,55%)] hover:text-white transition-colors"
+              className="p-1 rounded-lg hover:bg-[#F5EFE6] text-gray-500 hover:text-gray-800 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -155,8 +155,8 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           {step === "details" && (
             <form onSubmit={handleSendOtp} className="space-y-4">
               <div className="text-center space-y-1">
-                <h3 className="text-base font-black text-white">Confirm Diners Details</h3>
-                <p className="text-xs text-[hsl(220,10%,55%)]">
+                <h3 className="text-base font-black text-gray-900">Confirm Diner Details</h3>
+                <p className="text-xs text-gray-500">
                   Verify your active table details to authenticate the order.
                 </p>
               </div>
@@ -165,69 +165,69 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               <div className="space-y-3.5 pt-2">
                 {/* Diner Name */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase text-[hsl(220,10%,50%)] tracking-wider">Your Name</label>
-                  <div className="flex items-center gap-2 px-3 py-2 bg-[hsl(30,12%,10%)] border border-white/10 rounded-xl focus-within:border-orange-500 transition-colors">
-                    <User className="w-4 h-4 text-orange-400 shrink-0" />
+                  <label className="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Your Name</label>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-[#FAF7F2] border border-[#EBE3D5] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/10 transition-colors shadow-2xs">
+                    <User className="w-4 h-4 text-[#D97706] shrink-0" />
                     <input
                       type="text"
                       placeholder="e.g. Sanjay"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="w-full text-xs text-white bg-transparent outline-none placeholder-[hsl(220,10%,45%)]"
+                      className="w-full text-xs text-gray-800 bg-transparent outline-none placeholder-gray-400"
                     />
                   </div>
                 </div>
 
                 {/* Mobile Phone Number */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase text-[hsl(220,10%,50%)] tracking-wider">Mobile Number</label>
-                  <div className="flex items-center gap-2 px-3 py-2 bg-[hsl(30,12%,10%)] border border-white/10 rounded-xl focus-within:border-orange-500 transition-colors">
-                    <Phone className="w-4 h-4 text-orange-400 shrink-0" />
+                  <label className="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Mobile Number</label>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-[#FAF7F2] border border-[#EBE3D5] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/10 transition-colors shadow-2xs">
+                    <Phone className="w-4 h-4 text-[#D97706] shrink-0" />
                     <input
                       type="tel"
                       placeholder="10-digit mobile number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       required
-                      className="w-full text-xs text-white bg-transparent outline-none placeholder-[hsl(220,10%,45%)]"
+                      className="w-full text-xs text-gray-800 bg-transparent outline-none placeholder-gray-400"
                     />
                   </div>
                 </div>
 
                 {/* Special Instructions */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase text-[hsl(220,10%,50%)] tracking-wider flex items-center justify-between">
+                  <label className="text-[10px] font-bold uppercase text-gray-500 tracking-wider flex items-center justify-between">
                     <span>Special Chef Notes</span>
-                    <span className="text-[9px] text-[hsl(220,10%,40%)] normal-case font-medium">Optional</span>
+                    <span className="text-[9px] text-gray-400 normal-case font-medium">Optional</span>
                   </label>
-                  <div className="flex items-start gap-2 px-3 py-2 bg-[hsl(30,12%,10%)] border border-white/10 rounded-xl focus-within:border-orange-500 transition-colors">
-                    <FileText className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2 px-3 py-2 bg-[#FAF7F2] border border-[#EBE3D5] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/10 transition-colors shadow-2xs">
+                    <FileText className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
                     <textarea
                       placeholder="e.g. Please make the chicken extra spicy, allergies warnings, etc."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       rows={2}
-                      className="w-full text-xs text-white bg-transparent outline-none placeholder-[hsl(220,10%,45%)] resize-none"
+                      className="w-full text-xs text-gray-800 bg-transparent outline-none placeholder-gray-400 resize-none"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Cart Summary Snippet */}
-              <div className="p-3 bg-black/20 border border-white/5 rounded-2xl space-y-2 mt-2">
+              <div className="p-3.5 bg-[#FAF7F2] border border-[#EBE3D5] rounded-2xl space-y-2 mt-2 shadow-2xs">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-[hsl(220,10%,55%)] font-bold">Total Items:</span>
-                  <span className="text-white font-bold">{items.reduce((acc, i) => acc + i.quantity, 0)} items</span>
+                  <span className="text-gray-500 font-bold">Total Items:</span>
+                  <span className="text-gray-800 font-bold">{items.reduce((acc, i) => acc + i.quantity, 0)} items</span>
                 </div>
                 <div className="flex justify-between text-xs font-black">
-                  <span className="text-white">Amount Payable:</span>
-                  <span className="text-orange-400">{formatPrice(getTotal())}</span>
+                  <span className="text-gray-900">Amount Payable:</span>
+                  <span className="text-[#D97706] font-black">{formatPrice(getTotal())}</span>
                 </div>
               </div>
 
               {error && (
-                <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-xl text-center">
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-xl text-center font-semibold">
                   ⚠️ {error}
                 </p>
               )}
@@ -236,7 +236,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               <Button
                 type="submit"
                 disabled={isSendingOtp}
-                className="w-full h-12 bg-gradient-to-r from-orange-400 via-orange-500 to-rose-600 hover:opacity-90 rounded-xl text-xs font-black text-white shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 select-none cursor-pointer mt-4"
+                className="w-full h-12 bg-gradient-to-r from-amber-500 to-[#D97706] hover:opacity-95 rounded-xl text-xs font-black text-white shadow-md flex items-center justify-center gap-2 select-none cursor-pointer mt-4 no-min-size"
               >
                 {isSendingOtp ? (
                   <>
@@ -262,14 +262,14 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               />
               
               {error && (
-                <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-xl text-center">
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-xl text-center">
                   ⚠️ {error}
                 </p>
               )}
 
               <button
                 onClick={() => setStep("details")}
-                className="w-full text-center text-xs text-[hsl(220,10%,55%)] hover:text-white transition-colors py-1 cursor-pointer select-none"
+                className="w-full text-center text-xs text-gray-500 hover:text-gray-800 transition-colors py-1 cursor-pointer select-none no-min-size"
               >
                 Change Phone Number
               </button>

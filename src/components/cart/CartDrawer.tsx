@@ -19,6 +19,23 @@ export function CartDrawer() {
 
   const handleToggle = () => setIsOpen(!isOpen);
 
+  // Dynamic AI Upsell based on active cart items
+  const hasBiryani = items.some(i => i.menuItem.name.toLowerCase().includes("biryani"));
+  const hasButterChicken = items.some(i => i.menuItem.name.toLowerCase().includes("chicken"));
+  const hasStarters = items.some(i => i.menuItem.category.toLowerCase().includes("starter"));
+  const hasDesserts = items.some(i => i.menuItem.category.toLowerCase().includes("dessert"));
+
+  let upsellMessage = "";
+  if (hasBiryani) {
+    upsellMessage = "🍛 Add Cucumber Raita to perfectly complement your Biryani order!";
+  } else if (hasButterChicken) {
+    upsellMessage = "🫓 Garlic Naan goes beautifully with slow-cooked Butter Chicken. Add it?";
+  } else if (hasStarters && !hasDesserts) {
+    upsellMessage = "🍰 Complete your premium dining experience with our Chef's signature Shahi Tukda dessert.";
+  } else {
+    upsellMessage = "✨ Zara suggests adding a cold beverage to refresh your table.";
+  }
+
   return (
     <>
       {/* Sticky Bottom Bar (Trigger) - Only shows if items in cart */}
@@ -29,25 +46,25 @@ export function CartDrawer() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md px-3.5 py-3 rounded-2xl glass-strong glow-brand flex items-center justify-between"
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md px-3.5 py-3 rounded-2xl bg-white border border-[#F5EFE6] shadow-lg flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="relative w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 no-min-size">
-                <ShoppingBag className="w-5 h-5 no-min-size animate-pulse" />
-                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-orange-500 text-[10px] font-black text-white flex items-center justify-center border-2 border-[hsl(220,18%,11%)] no-min-size">
+              <div className="relative w-9 h-9 rounded-xl bg-[#D97706]/10 border border-[#D97706]/20 flex items-center justify-center text-[#D97706] no-min-size shadow-2xs">
+                <ShoppingBag className="w-5 h-5 no-min-size" />
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#D97706] text-[9px] font-black text-white flex items-center justify-center border-2 border-white no-min-size shadow-2xs">
                   {itemCount}
                 </span>
               </div>
-              <div>
-                <p className="text-xs font-bold text-white">Your Cart</p>
-                <p className="text-[10px] text-orange-400 font-extrabold mt-0.5">{formatPrice(total)}</p>
+              <div className="text-left">
+                <p className="text-xs font-bold text-gray-900 leading-none">Your Cart</p>
+                <p className="text-[10px] text-[#D97706] font-bold mt-1 leading-none">{formatPrice(total)}</p>
               </div>
             </div>
 
             <Button
               size="sm"
               onClick={handleToggle}
-              className="gap-1.5 h-9 rounded-xl font-bold bg-orange-500 hover:bg-orange-400 text-white shadow-lg shadow-orange-500/25"
+              className="gap-1.5 h-9 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-[#D97706] hover:opacity-95 text-white shadow-xs cursor-pointer"
             >
               <span>View Cart</span>
               <ArrowRight className="w-4 h-4 no-min-size" />
@@ -62,10 +79,10 @@ export function CartDrawer() {
           <>
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
+              animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
               onClick={handleToggle}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs"
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-2xs"
             />
 
             {/* Sliding Drawer Container */}
@@ -74,17 +91,17 @@ export function CartDrawer() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-40 w-full max-w-md bg-[hsl(220,18%,11%)] border-l border-white/5 shadow-2xl flex flex-col"
+              className="fixed inset-y-0 right-0 z-40 w-full max-w-md bg-[#FFFDF9] border-l border-[#F5EFE6] shadow-2xl flex flex-col"
             >
               {/* Header */}
-              <div className="p-4 border-b border-[hsla(220,15%,95%,0.06)] flex items-center justify-between">
+              <div className="p-4 border-b border-[#F5EFE6] bg-[#FAF7F2] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-4.5 h-4.5 text-orange-400" />
-                  <h2 className="text-sm font-black text-white">Your Shared Table Cart</h2>
+                  <ShoppingBag className="w-4.5 h-4.5 text-[#D97706]" />
+                  <h2 className="text-sm font-extrabold text-gray-950 font-plus-jakarta">Your Shared Table Cart</h2>
                 </div>
                 <button
                   onClick={handleToggle}
-                  className="p-1 rounded-lg hover:bg-white/5 text-[hsl(220,10%,55%)] hover:text-white transition-colors"
+                  className="p-1 rounded-lg hover:bg-[#F5EFE6] text-gray-500 hover:text-gray-800 transition-colors"
                 >
                   <X className="w-4.5 h-4.5" />
                 </button>
@@ -95,15 +112,26 @@ export function CartDrawer() {
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-20 text-center select-none">
                     <p className="text-4xl mb-2" aria-hidden="true">🛒</p>
-                    <p className="text-sm font-semibold text-white">Your cart is empty</p>
-                    <p className="text-xs text-[hsl(220,10%,55%)] mt-1">Browse the menu to add delicious items!</p>
+                    <p className="text-sm font-semibold text-gray-800">Your cart is empty</p>
+                    <p className="text-xs text-gray-500 mt-1 font-medium">Browse the menu to add delicious items!</p>
                   </div>
                 ) : (
-                  <div className="space-y-1">
-                    {items.map((item) => (
-                      <CartItem key={item.menuItem.id} item={item} />
-                    ))}
-                  </div>
+                  <>
+                    {/* Active Cart Items */}
+                    <div className="space-y-1">
+                      {items.map((item) => (
+                        <CartItem key={item.menuItem.id} item={item} />
+                      ))}
+                    </div>
+
+                    {/* AI Upsell recommendation box */}
+                    <div className="rounded-2xl bg-amber-50/60 border border-amber-100/30 p-3.5 flex items-start gap-2.5 text-left">
+                      <Sparkles className="w-4.5 h-4.5 text-[#D97706] shrink-0 mt-0.5" />
+                      <p className="text-xs font-semibold text-amber-900 leading-normal">
+                        {upsellMessage}
+                      </p>
+                    </div>
+                  </>
                 )}
 
                 {/* Bill details */}
@@ -111,9 +139,9 @@ export function CartDrawer() {
               </div>
 
               {/* Checkout / Footer Panel */}
-              <div className="p-4 border-t border-[hsla(220,15%,95%,0.06)] bg-[hsl(30,12%,10%)]">
+              <div className="p-4 border-t border-[#F5EFE6] bg-[#FAF7F2] shadow-sm">
                 <Button
-                  className="w-full h-12 rounded-xl text-sm font-extrabold gap-2 bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/20"
+                  className="w-full h-14 rounded-2xl text-sm font-extrabold gap-2 bg-gradient-to-r from-[#D97706] to-[#C2410C] hover:opacity-95 text-white shadow-md cursor-pointer"
                   disabled={items.length === 0}
                   onClick={() => {
                     setIsCheckoutOpen(true);

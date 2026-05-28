@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UtensilsCrossed, User, Flame, Sparkles, Check, Heart, ShieldAlert } from "lucide-react";
+import { UtensilsCrossed, User, Sparkles, ChevronRight } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
 
@@ -10,11 +10,28 @@ interface GreeterModalProps {
   tableId: string;
 }
 
+type Step = "welcome" | "preferences";
+
+const MOOD_CHIPS = [
+  { id: "light", label: "Light & Healthy", emoji: "🥗" },
+  { id: "spicy", label: "Spicy & Bold", emoji: "🔥" },
+  { id: "sweet", label: "Something Sweet", emoji: "🍰" },
+  { id: "filling", label: "Heavy & Filling", emoji: "🥘" },
+  { id: "surprise", label: "Surprise Me!", emoji: "✨" },
+];
+
+const DIET_OPTIONS = [
+  { id: "none", label: "Everything", emoji: "🍽️" },
+  { id: "veg", label: "Pure Veg", emoji: "🥬" },
+  { id: "non-veg", label: "Non-Veg", emoji: "🍗" },
+];
+
 export function GreeterModal({ tableId }: GreeterModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [step, setStep] = useState<Step>("welcome");
   const [name, setName] = useState("");
+  const [mood, setMood] = useState<string | null>(null);
   const [diet, setDiet] = useState<"veg" | "non-veg" | "none">("none");
-  const [spice, setSpice] = useState<"mild" | "medium" | "hot">("medium");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { sessionId, setSession, displayName } = useCartStore();
@@ -25,57 +42,58 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
     }
   }, [sessionId, displayName]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleNameNext = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Please tell us your name so Chef Zara can welcome you!");
+      toast.error("Please tell us your name!");
       return;
     }
+    setStep("preferences");
+  };
 
+  const handleFinish = async (browseMode = false) => {
     setIsSubmitting(true);
     try {
-      // 1. Fetch/Initialize the Table Session
       const res = await fetch(`/api/table/${tableId}/session`);
       if (!res.ok) throw new Error("Failed to initialize session");
-      
+
       const json = await res.json();
-      if (!json.success) throw new Error(json.error || "Failed to initialize session");
+      if (!json.success) throw new Error(json.error || "Session error");
 
       const activeSessionId = json.data.sessionId;
 
-      // 2. Pre-seed the AI preferences if they picked dietary/spice bounds
-      if (diet !== "none" || spice !== "medium") {
-        try {
-          const prefData: Record<string, any> = {};
-          if (diet !== "none") prefData.dietPreference = diet;
-          prefData.spiceLevel = spice;
-          prefData.onboardingCompleted = true; // Skip verbal onboarding step since they did it in the GUI!
-          prefData.onboardingStep = 3;
+      // Seed preferences from the greeter into AI context
+      try {
+        const prefData: Record<string, any> = {
+          onboardingCompleted: true,
+          onboardingStep: 3,
+        };
+        if (diet !== "none") prefData.dietPreference = diet;
+        if (mood) prefData.mood = mood;
+        if (browseMode) prefData.browseMode = true;
 
-          await fetch(`/api/session/${activeSessionId}/cart`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              seedPreferences: prefData,
-            }),
-          });
-        } catch (prefErr) {
-          console.warn("Preferences seeding warning:", prefErr);
-        }
+        await fetch(`/api/session/${activeSessionId}/cart`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ seedPreferences: prefData }),
+        });
+      } catch (prefErr) {
+        console.warn("Preference seeding warn:", prefErr);
       }
 
-      // 3. Save details locally in Zustand store
       setSession(activeSessionId, tableId, name.trim());
-      
-      toast.success(`Welcome to Table ${tableId}, ${name.trim()}!`, {
-        description: "Your live group session and AI Sommelier are active.",
-        duration: 3500,
+
+      toast.success(`Welcome, ${name.trim()}! 🎉`, {
+        description: browseMode
+          ? "Browse freely. Tap Zara anytime for help!"
+          : "Zara is ready to build your perfect meal.",
+        duration: 3000,
       });
 
       setIsOpen(false);
     } catch (err: any) {
-      console.error("❌ Onboarding failed:", err);
-      toast.error("Failed to connect to the table. Please try again.");
+      console.error("Onboarding error:", err);
+      toast.error("Failed to connect. Please refresh.");
     } finally {
       setIsSubmitting(false);
     }
@@ -85,159 +103,185 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
-        {/* Backdrop overlay with blur */}
+      <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/85 backdrop-blur-[14px]"
+          className="absolute inset-0 bg-black/50"
+          style={{ backdropFilter: "blur(8px)" }}
         />
 
-        {/* Modal Panel - Gorgeous glassmorphic reservation card style */}
+        {/* Modal Card */}
         <motion.div
-          initial={{ scale: 0.93, y: 30, opacity: 0 }}
-          animate={{ scale: 1, y: 0, opacity: 1 }}
-          exit={{ scale: 0.93, y: 30, opacity: 0 }}
-          transition={{ type: "spring", damping: 26, stiffness: 220 }}
-          className="relative z-50 w-full max-w-md glass-premium p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-y-auto max-h-[92dvh] border border-white/10"
+          initial={{ y: 60, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 60, opacity: 0 }}
+          transition={{ type: "spring", damping: 28, stiffness: 220 }}
+          className="relative z-10 w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden"
         >
-          {/* Subtle neon glowing backdrops for luxury atmosphere */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-44 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent blur-[2px] no-min-size" />
+          {/* Top accent bar */}
+          <div className="h-1 w-full bg-gradient-to-r from-amber-400 via-[#D97706] to-orange-500" />
 
-          {/* Header logo & Greeting */}
-          <div className="flex flex-col items-center text-center mb-6">
-            <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center shadow-[0_0_24px_hsla(24,95%,53%,0.5)] mb-3.5 no-min-size">
-              <UtensilsCrossed className="w-6.5 h-6.5 text-white" />
-            </div>
-            <h2 className="text-xl font-black text-white leading-tight tracking-tight">
-              Welcome to <span className="text-gradient-brand">Spice Garden</span>
-            </h2>
-            <p className="text-[10px] text-[hsl(220,10%,55%)] mt-1.5 max-w-[280px] leading-relaxed">
-              Step into an AI-first dining somatic journey. Zara, our AI Sommelier, will personalize your culinary table.
-            </p>
+          <div className="p-7">
+            <AnimatePresence mode="wait">
+              {/* ── STEP 1: Welcome + Name ──────────────── */}
+              {step === "welcome" && (
+                <motion.div
+                  key="step-welcome"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Zara avatar */}
+                  <div className="flex flex-col items-center text-center mb-7">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-[#D97706] flex items-center justify-center shadow-lg mb-4">
+                      <UtensilsCrossed className="w-8 h-8 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 leading-tight">
+                      Welcome to{" "}
+                      <span className="text-[#D97706]">
+                        {process.env.NEXT_PUBLIC_RESTAURANT_NAME || "Spice Garden"}
+                      </span>
+                    </h2>
+                    <p className="text-gray-500 text-sm mt-2 max-w-xs leading-relaxed">
+                      I&apos;m <strong className="text-gray-700">Zara</strong>, your AI dining concierge. Let me personalize your experience!
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleNameNext} className="space-y-5">
+                    <div>
+                      <label htmlFor="diner-name" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Your Name
+                      </label>
+                      <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EBE3D5] focus-within:border-[#D97706]/50 focus-within:ring-2 focus-within:ring-[#D97706]/10 transition-all">
+                        <User className="w-4.5 h-4.5 text-gray-400 shrink-0" />
+                        <input
+                          id="diner-name"
+                          type="text"
+                          placeholder="What shall I call you?"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          maxLength={25}
+                          autoFocus
+                          className="w-full text-sm text-gray-800 bg-transparent outline-none placeholder-gray-400 font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={!name.trim()}
+                      className="w-full h-12 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 bg-[#D97706] hover:bg-[#B45309] text-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      Continue
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                </motion.div>
+              )}
+
+              {/* ── STEP 2: Mood + Diet ─────────────────── */}
+              {step === "preferences" && (
+                <motion.div
+                  key="step-prefs"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-6"
+                >
+                  {/* Zara greeting */}
+                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-100">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-[#D97706] flex items-center justify-center shrink-0">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-800">Hi {name}! 👋</p>
+                      <p className="text-sm text-gray-600 mt-0.5 leading-relaxed">
+                        Quick question — what&apos;s the vibe today?
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Mood chips */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                      I&apos;m in the mood for…
+                    </p>
+                    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                      {MOOD_CHIPS.map((chip) => (
+                        <button
+                          key={chip.id}
+                          type="button"
+                          onClick={() => setMood(mood === chip.id ? null : chip.id)}
+                          className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border text-xs font-semibold transition-all cursor-pointer select-none ${
+                            mood === chip.id
+                              ? "bg-[#D97706] border-[#D97706] text-white shadow-sm"
+                              : "bg-[#FAF7F2] border-[#EBE3D5] text-gray-600 hover:border-[#D97706]/40"
+                          }`}
+                        >
+                          <span className="text-xl">{chip.emoji}</span>
+                          <span className="leading-tight text-center">{chip.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Diet preference */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                      Dietary preference
+                    </p>
+                    <div className="flex gap-2.5">
+                      {DIET_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setDiet(opt.id as any)}
+                          className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-2xl border text-xs font-semibold transition-all cursor-pointer select-none ${
+                            diet === opt.id
+                              ? "bg-[#D97706] border-[#D97706] text-white shadow-sm"
+                              : "bg-[#FAF7F2] border-[#EBE3D5] text-gray-600 hover:border-[#D97706]/40"
+                          }`}
+                        >
+                          <span className="text-xl">{opt.emoji}</span>
+                          <span>{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="flex flex-col gap-2.5 pt-1">
+                    <button
+                      onClick={() => handleFinish(false)}
+                      disabled={isSubmitting}
+                      className="w-full h-12 rounded-2xl font-semibold text-sm bg-[#D97706] hover:bg-[#B45309] text-white shadow-sm flex items-center justify-center gap-2 transition-all disabled:opacity-60 cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Tell me what&apos;s good
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => handleFinish(true)}
+                      disabled={isSubmitting}
+                      className="w-full h-11 rounded-2xl font-medium text-sm text-gray-500 hover:text-gray-700 border border-[#EBE3D5] hover:bg-[#FAF7F2] transition-all cursor-pointer"
+                    >
+                      Just browsing
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4.5">
-            {/* Input Name with interactive outline */}
-            <div>
-              <label htmlFor="diner-name" className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-1.5">
-                Diner Name (Required)
-              </label>
-              <div className="input-premium flex items-center px-3.5 py-2 gap-2.5">
-                <User className="w-4 h-4 text-[hsl(220,10%,45%)] shrink-0 no-min-size" />
-                <input
-                  id="diner-name"
-                  type="text"
-                  placeholder="Tell us your name..."
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  maxLength={20}
-                  disabled={isSubmitting}
-                  className="w-full text-xs text-white bg-transparent outline-none py-1.5 placeholder-[hsl(220,10%,40%)] font-medium"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Diet chips - transformed into gorgeous tactile selection cards */}
-            <div>
-              <span className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-2">
-                Dietary Preference
-              </span>
-              <div className="grid grid-cols-3 gap-2.5">
-                {[
-                  { id: "none", label: "Anything", emoji: "🍽️", theme: "hover:border-orange-500/30", active: "bg-orange-500/10 border-orange-500/70 text-orange-400" },
-                  { id: "veg", label: "Pure Veg", emoji: "🥬", theme: "hover:border-emerald-500/30", active: "bg-emerald-500/10 border-emerald-500/70 text-emerald-400" },
-                  { id: "non-veg", label: "Non-Veg", emoji: "🍗", theme: "hover:border-rose-500/30", active: "bg-rose-500/10 border-rose-500/70 text-rose-400" },
-                ].map((option) => {
-                  const isActive = diet === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setDiet(option.id as any)}
-                      disabled={isSubmitting}
-                      className={`relative py-3.5 px-1 rounded-xl text-[10px] font-black border flex flex-col items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer no-min-size shadow-sm select-none ${
-                        isActive 
-                          ? `${option.active} scale-[1.03] shadow-md` 
-                          : `bg-[hsl(220,16%,14%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,60%)] ${option.theme}`
-                      }`}
-                    >
-                      <span className="text-sm">{option.emoji}</span>
-                      <span>{option.label}</span>
-                      
-                      {isActive && (
-                        <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-current flex items-center justify-center p-0.5 no-min-size">
-                          <Check className="w-full h-full text-[hsl(220,20%,7%)] stroke-[4]" />
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Spice level chips - styled as tactile flame gauges */}
-            <div>
-              <span className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-2">
-                Preferred Spice Level
-              </span>
-              <div className="grid grid-cols-3 gap-2.5">
-                {[
-                  { id: "mild", label: "Mild", desc: "No spice", active: "bg-emerald-500/10 border-emerald-500/70 text-emerald-400" },
-                  { id: "medium", label: "Medium", desc: "Balanced", active: "bg-orange-500/10 border-orange-500/70 text-orange-400" },
-                  { id: "hot", label: "Hot 🌶️", desc: "Very tikha", active: "bg-rose-500/10 border-rose-500/70 text-rose-400" },
-                ].map((option) => {
-                  const isActive = spice === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setSpice(option.id as any)}
-                      disabled={isSubmitting}
-                      className={`relative py-3 px-1 rounded-xl text-[10px] font-black border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer no-min-size shadow-sm select-none ${
-                        isActive 
-                          ? `${option.active} scale-[1.03] shadow-md` 
-                          : "bg-[hsl(220,16%,14%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,60%)] hover:border-orange-500/30"
-                      }`}
-                    >
-                      <span>{option.label}</span>
-                      <span className="text-[8px] text-[hsl(220,10%,45%)] mt-0.5 font-medium">{option.desc}</span>
-                      
-                      {isActive && (
-                        <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-current flex items-center justify-center p-0.5 no-min-size">
-                          <Check className="w-full h-full text-[hsl(220,20%,7%)] stroke-[4]" />
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Submit button with luxury glow and sparkles */}
-            <div className="pt-3">
-              <button
-                type="submit"
-                disabled={!name.trim() || isSubmitting}
-                className={`w-full py-3 rounded-xl font-extrabold text-[12px] flex items-center justify-center gap-2 transition-all duration-300 border border-white/10 ${
-                  name.trim() && !isSubmitting
-                    ? "bg-gradient-to-br from-orange-500 to-rose-500 hover:opacity-95 shadow-[0_0_24px_rgba(249,115,22,0.45)] cursor-pointer text-white"
-                    : "bg-[hsl(220,16%,14%)] border border-[hsla(220,15%,95%,0.04)] text-[hsl(220,10%,40%)] cursor-not-allowed"
-                }`}
-              >
-                {isSubmitting ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin no-min-size" />
-                ) : (
-                  <>
-                    <Sparkles className="w-4.5 h-4.5 text-white animate-pulse" />
-                    <span>Enter Dining Room</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
         </motion.div>
       </div>
     </AnimatePresence>
