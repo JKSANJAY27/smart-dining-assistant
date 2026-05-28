@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { UtensilsCrossed, Wifi, Users, Clock, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { MenuGrid } from "@/components/menu/MenuGrid";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { getTimeOfDay } from "@/lib/utils";
 
 interface TablePageProps {
@@ -164,6 +165,9 @@ export function TablePage({ tableId }: TablePageProps) {
         </AnimatePresence>
       </main>
       </div>
+
+      {/* Floating Shared Table Cart Drawer */}
+      <CartDrawer />
     </div>
   );
 }
