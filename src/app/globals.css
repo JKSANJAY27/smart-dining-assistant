@@ -4,31 +4,31 @@
 /* ─── CSS Design Tokens ─────────────────────────────────────── */
 :root {
   /* Brand Colors */
-  --brand-primary: hsl(24, 95%, 53%);          /* Vibrant orange */
-  --brand-primary-light: hsl(24, 95%, 63%);
-  --brand-primary-dark: hsl(24, 95%, 43%);
+  --brand-primary: hsl(28, 95%, 53%);          /* Warm sunburst orange */
+  --brand-primary-light: hsl(28, 95%, 63%);
+  --brand-primary-dark: hsl(28, 95%, 43%);
   --brand-accent: hsl(162, 73%, 46%);          /* Emerald green */
   --brand-accent-light: hsl(162, 73%, 56%);
-  --brand-gold: hsl(45, 96%, 64%);             /* Gold for premium */
+  --brand-gold: hsl(45, 96%, 60%);             /* Golden tumeric */
   --brand-rose: hsl(340, 82%, 57%);            /* Rose for tags */
 
-  /* Dark Theme */
-  --bg-base: hsl(220, 20%, 7%);                /* Near-black */
-  --bg-surface: hsl(220, 18%, 11%);            /* Cards */
-  --bg-elevated: hsl(220, 16%, 15%);           /* Elevated cards */
-  --bg-overlay: hsl(220, 14%, 19%);            /* Modals/drawers */
-  --bg-glass: hsla(220, 18%, 15%, 0.8);        /* Glass effect */
+  /* Gastronomic Dark Theme - Warm Coppery Dark Chocolate Slate */
+  --bg-base: hsl(30, 16%, 6%);                 /* Deep warm copper-charcoal */
+  --bg-surface: hsl(30, 12%, 10%);             /* Warm card background */
+  --bg-elevated: hsl(30, 10%, 14%);            /* Elevated surfaces */
+  --bg-overlay: hsl(30, 8%, 18%);              /* Drawers/modals */
+  --bg-glass: hsla(30, 12%, 10%, 0.78);        /* Glassmorphism */
 
-  /* Text */
-  --text-primary: hsl(220, 15%, 95%);
-  --text-secondary: hsl(220, 10%, 65%);
-  --text-muted: hsl(220, 8%, 45%);
-  --text-inverse: hsl(220, 20%, 7%);
+  /* Text - Elegant, clean, high-contrast values */
+  --text-primary: hsl(30, 10%, 96%);
+  --text-secondary: hsl(30, 8%, 70%);
+  --text-muted: hsl(30, 6%, 50%);
+  --text-inverse: hsl(30, 16%, 6%);
 
   /* Borders */
-  --border-subtle: hsla(220, 15%, 95%, 0.08);
-  --border-default: hsla(220, 15%, 95%, 0.12);
-  --border-strong: hsla(220, 15%, 95%, 0.2);
+  --border-subtle: hsla(30, 10%, 95%, 0.07);
+  --border-default: hsla(30, 10%, 95%, 0.11);
+  --border-strong: hsla(30, 10%, 95%, 0.18);
 
   /* Status */
   --status-success: hsl(142, 71%, 45%);
@@ -37,19 +37,19 @@
   --status-info: hsl(217, 91%, 60%);
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(340, 82%, 57%));
+  --gradient-brand: linear-gradient(135deg, hsl(28, 95%, 53%), hsl(340, 82%, 57%));
   --gradient-accent: linear-gradient(135deg, hsl(162, 73%, 46%), hsl(217, 91%, 60%));
-  --gradient-gold: linear-gradient(135deg, hsl(45, 96%, 64%), hsl(24, 95%, 53%));
-  --gradient-surface: linear-gradient(135deg, hsl(220, 18%, 11%), hsl(220, 16%, 15%));
-  --gradient-hero: radial-gradient(ellipse at 70% 0%, hsla(24, 95%, 53%, 0.15) 0%, transparent 60%),
-                   radial-gradient(ellipse at 0% 80%, hsla(162, 73%, 46%, 0.1) 0%, transparent 50%);
+  --gradient-gold: linear-gradient(135deg, hsl(45, 96%, 60%), hsl(28, 95%, 53%));
+  --gradient-surface: linear-gradient(135deg, hsl(30, 12%, 10%), hsl(30, 10%, 14%));
+  --gradient-hero: radial-gradient(ellipse at 70% 0%, hsla(28, 95%, 53%, 0.14) 0%, transparent 60%),
+                   radial-gradient(ellipse at 0% 80%, hsla(162, 73%, 46%, 0.08) 0%, transparent 50%);
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px hsla(0, 0%, 0%, 0.4);
-  --shadow-md: 0 4px 16px hsla(0, 0%, 0%, 0.5);
-  --shadow-lg: 0 8px 32px hsla(0, 0%, 0%, 0.6);
-  --shadow-glow-brand: 0 0 24px hsla(24, 95%, 53%, 0.35);
-  --shadow-glow-accent: 0 0 24px hsla(162, 73%, 46%, 0.3);
+  --shadow-sm: 0 1px 3px hsla(0, 0%, 0%, 0.5);
+  --shadow-md: 0 4px 20px hsla(0, 0%, 0%, 0.6);
+  --shadow-lg: 0 8px 36px hsla(0, 0%, 0%, 0.7);
+  --shadow-glow-brand: 0 0 24px hsla(28, 95%, 53%, 0.3);
+  --shadow-glow-accent: 0 0 24px hsla(162, 73%, 46%, 0.25);
 
   /* Spacing & Radii */
   --radius-sm: 8px;
@@ -91,19 +91,19 @@ body {
 
 /* ─── Tailwind v4 custom theme ───────────────────────────────── */
 @theme {
-  --color-brand: hsl(24, 95%, 53%);
-  --color-brand-light: hsl(24, 95%, 63%);
-  --color-brand-dark: hsl(24, 95%, 43%);
+  --color-brand: hsl(28, 95%, 53%);
+  --color-brand-light: hsl(28, 95%, 63%);
+  --color-brand-dark: hsl(28, 95%, 43%);
   --color-accent: hsl(162, 73%, 46%);
-  --color-gold: hsl(45, 96%, 64%);
+  --color-gold: hsl(45, 96%, 60%);
   --color-rose-custom: hsl(340, 82%, 57%);
-  --color-bg-base: hsl(220, 20%, 7%);
-  --color-bg-surface: hsl(220, 18%, 11%);
-  --color-bg-elevated: hsl(220, 16%, 15%);
-  --color-bg-overlay: hsl(220, 14%, 19%);
-  --color-text-primary: hsl(220, 15%, 95%);
-  --color-text-secondary: hsl(220, 10%, 65%);
-  --color-text-muted: hsl(220, 8%, 45%);
+  --color-bg-base: hsl(30, 16%, 6%);
+  --color-bg-surface: hsl(30, 12%, 10%);
+  --color-bg-elevated: hsl(30, 10%, 14%);
+  --color-bg-overlay: hsl(30, 8%, 18%);
+  --color-text-primary: hsl(30, 10%, 96%);
+  --color-text-secondary: hsl(30, 8%, 70%);
+  --color-text-muted: hsl(30, 6%, 50%);
   --font-outfit: 'Outfit', sans-serif;
   --font-inter: 'Inter', sans-serif;
 }

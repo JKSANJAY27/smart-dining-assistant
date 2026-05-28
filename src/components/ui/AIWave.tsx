@@ -12,7 +12,7 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
   const isStreaming = state === "streaming";
 
   return (
-    <div className="relative w-full h-16 flex items-center justify-center overflow-hidden bg-[hsl(220,18%,11%)] rounded-xl border border-[hsla(220,15%,95%,0.05)] shadow-inner">
+    <div className="relative w-full h-16 flex items-center justify-center overflow-hidden bg-[hsl(30,12%,10%)] rounded-xl border border-[hsla(30,10%,95%,0.05)] shadow-inner">
       {/* Soft background ambient glow */}
       <motion.div
         animate={{
@@ -58,7 +58,7 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
                   ? "from-orange-500 via-rose-500 to-amber-400"
                   : isThinking
                   ? "from-rose-500 to-orange-400"
-                  : "from-[hsl(220,10%,45%)] to-[hsl(220,10%,60%)]"
+                  : "from-[hsl(30,6%,50%)] to-[hsl(30,8%,70%)]"
               }`}
             />
           );
@@ -66,7 +66,7 @@ export function AIWave({ state = "idle" }: AIWaveProps) {
       </div>
 
       {/* Captions inside the waveform */}
-      <div className="absolute bottom-1 right-2.5 text-[8px] font-bold tracking-wider text-[hsl(220,10%,50%)] uppercase select-none">
+      <div className="absolute bottom-1 right-2.5 text-[8px] font-bold tracking-wider text-[hsl(30,8%,50%)] uppercase select-none">
         {isStreaming ? (
           <span className="text-orange-400 animate-pulse">Zara is speaking...</span>
         ) : isThinking ? (
