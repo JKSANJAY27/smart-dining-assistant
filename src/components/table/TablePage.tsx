@@ -71,8 +71,8 @@ export function TablePage({ tableId }: TablePageProps) {
 
   if (!mounted) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-[hsl(220,20%,7%)]">
-        <div className="w-8 h-8 rounded-full border-2 border-[hsla(220,15%,95%,0.15)] border-t-orange-500 animate-spin" />
+      <div className="min-h-dvh flex items-center justify-center bg-[hsl(30,16%,6%)]">
+        <div className="w-8 h-8 rounded-full border-2 border-[hsla(30,15%,95%,0.15)] border-t-orange-500 animate-spin" />
       </div>
     );
   }
@@ -81,7 +81,7 @@ export function TablePage({ tableId }: TablePageProps) {
   const renderChatPanel = () => (
     <div className="flex flex-col h-[65vh] md:h-[75vh] glass-premium rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
       {/* Wave Header */}
-      <div className="p-3 bg-gradient-to-b from-[hsl(220,18%,11%)] to-transparent shrink-0">
+      <div className="p-3 bg-gradient-to-b from-[hsl(30,12%,10%)] to-transparent shrink-0">
         <AIWave state={isStreaming ? "streaming" : isLoading ? "thinking" : "idle"} />
       </div>
 
@@ -101,7 +101,7 @@ export function TablePage({ tableId }: TablePageProps) {
       </div>
 
       {/* Control Drawer Footer */}
-      <div className="p-3 border-t border-[hsla(220,15%,95%,0.04)] bg-gradient-to-t from-[hsl(220,18%,13%)] to-[hsl(220,18%,11%)] shrink-0 flex flex-col gap-2">
+      <div className="p-3 border-t border-white/5 bg-gradient-to-t from-[hsl(30,10%,13%)] to-[hsl(30,12%,10%)] shrink-0 flex flex-col gap-2">
         <QuickTapButtons onTap={handleQuickTap} disabled={isLoading || isStreaming} />
 
         <form onSubmit={handleSend} className="flex gap-2 items-center mt-1">
@@ -123,7 +123,7 @@ export function TablePage({ tableId }: TablePageProps) {
             className={`w-9.5 h-9.5 flex items-center justify-center rounded-xl transition-all no-min-size shrink-0 ${
               inputText.trim() && !isLoading && !isStreaming
                 ? "bg-gradient-to-br from-orange-500 to-rose-500 text-white shadow-[0_0_12px_rgba(249,115,22,0.4)]"
-                : "bg-[hsl(220,16%,14%)] text-[hsl(220,10%,40%)] border border-[hsla(220,15%,95%,0.04)] cursor-not-allowed"
+                : "bg-[hsl(30,10%,13%)] text-[hsl(220,10%,40%)] border border-white/5 cursor-not-allowed"
             }`}
           >
             <Send className="w-4 h-4 no-min-size" />
@@ -145,20 +145,20 @@ export function TablePage({ tableId }: TablePageProps) {
   );
 
   return (
-    <div className="min-h-dvh relative overflow-hidden bg-[hsl(220,20%,7%)]">
+    <div className="min-h-dvh relative overflow-hidden bg-[hsl(30,16%,6%)]">
       {/* Ambient background glows */}
       <div
         aria-hidden="true"
-        className="fixed top-[-25%] right-[-15%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] rounded-full opacity-[0.06] pointer-events-none"
+        className="fixed top-[-20%] right-[-10%] w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] rounded-full opacity-[0.08] pointer-events-none"
         style={{
-          background: "radial-gradient(circle, hsl(24,95%,53%), transparent 70%)",
+          background: "radial-gradient(circle, hsl(28,95%,53%), transparent 70%)",
         }}
       />
       <div
         aria-hidden="true"
-        className="fixed bottom-[-20%] left-[-15%] w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] rounded-full opacity-[0.05] pointer-events-none"
+        className="fixed bottom-[-15%] left-[-10%] w-[65vw] h-[65vw] max-w-[600px] max-h-[600px] rounded-full opacity-[0.06] pointer-events-none"
         style={{
-          background: "radial-gradient(circle, hsl(162,73%,46%), transparent 70%)",
+          background: "radial-gradient(circle, hsl(45,96%,60%), transparent 70%)",
         }}
       />
 
@@ -173,7 +173,7 @@ export function TablePage({ tableId }: TablePageProps) {
             <UtensilsCrossed className="w-5 h-5 text-white animate-pulse" />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-white leading-none">
+            <h1 className="text-xl font-black text-white leading-none tracking-tight md:text-2xl">
               {process.env.NEXT_PUBLIC_RESTAURANT_NAME || "Spice Garden"}
             </h1>
             <p className="text-[10px] text-orange-400 font-extrabold mt-0.5 uppercase tracking-widest">Zara AI Host</p>
@@ -247,14 +247,14 @@ export function TablePage({ tableId }: TablePageProps) {
           {/* ─────────────────────────────────────────────────────────────────
               DESKTOP PANORAMIC LAYOUT (Side-by-Side Split screen)
               ───────────────────────────────────────────────────────────────── */}
-          <div className="hidden md:grid md:grid-cols-12 md:gap-6 mt-4 items-start">
+          <div className="hidden md:grid md:grid-cols-12 md:gap-8 mt-4 items-start">
             {/* Primary Left Column: Zara AI Sommelier */}
             <div className="md:col-span-5 lg:col-span-5 sticky top-20">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-6 h-6 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center no-min-size">
                   <Sparkles className="w-3.5 h-3.5 text-orange-400 no-min-size" />
                 </div>
-                <h2 className="text-xs font-black text-white uppercase tracking-wider">
+                <h2 className="text-sm font-black uppercase tracking-wider bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
                   Zara Sommelier Chat
                 </h2>
               </div>
@@ -264,10 +264,10 @@ export function TablePage({ tableId }: TablePageProps) {
             {/* Secondary Right Column: Digital Menu Catalog */}
             <div className="md:col-span-7 lg:col-span-7 space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[hsla(220,15%,95%,0.04)] border border-[hsla(220,15%,95%,0.05)] flex items-center justify-center no-min-size">
-                  <UtensilsCrossed className="w-3.5 h-3.5 text-[hsl(220,10%,65%)] no-min-size" />
+                <div className="w-6 h-6 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center no-min-size">
+                  <UtensilsCrossed className="w-3.5 h-3.5 text-orange-400 no-min-size" />
                 </div>
-                <h2 className="text-xs font-black text-white uppercase tracking-wider">
+                <h2 className="text-sm font-black uppercase tracking-wider bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
                   Culinary Grid
                 </h2>
               </div>
@@ -292,7 +292,7 @@ export function TablePage({ tableId }: TablePageProps) {
               ───────────────────────────────────────────────────────────────── */}
           <div className="md:hidden mt-4 space-y-4">
             {/* Sliding Pill Tab Switcher */}
-            <div className="w-full flex bg-[hsl(220,18%,9%)] border border-white/5 p-1 rounded-2xl shadow-inner shrink-0 relative z-10 select-none">
+            <div className="w-full flex bg-[hsl(30,12%,10%)] border border-white/5 p-1 rounded-2xl shadow-inner shrink-0 relative z-10 select-none">
               <button
                 onClick={() => setActiveTab("zara")}
                 className={`flex-1 py-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer no-min-size ${
