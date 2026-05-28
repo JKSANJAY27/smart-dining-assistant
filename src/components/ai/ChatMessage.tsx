@@ -44,7 +44,7 @@ function formatMessageContent(content: string) {
     }
 
     return (
-      <p key={`line-${lineIdx}`} className="text-[12px] text-white/95 leading-relaxed mt-1 first:mt-0 font-medium">
+      <p key={`line-${lineIdx}`} className="text-[13.5px] text-white/95 leading-relaxed mt-1.5 first:mt-0 font-medium">
         {parts.length > 0 ? parts : line}
       </p>
     );

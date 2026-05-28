@@ -55,15 +55,15 @@ export function MenuCard({ item, index = 0 }: MenuCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
       className={cn(
-        "group relative rounded-2xl overflow-hidden",
-        "bg-[hsl(220,18%,11%)] border border-[hsla(220,15%,95%,0.08)]",
+        "group relative rounded-2xl overflow-hidden shadow-md",
+        "bg-[hsl(30,12%,10%)] border border-[hsla(30,10%,95%,0.08)]",
         "transition-all duration-250",
-        "hover:border-[hsla(220,15%,95%,0.16)] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30",
+        "hover:border-[hsla(30,10%,95%,0.18)] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/40",
         !item.available && "opacity-60 pointer-events-none"
       )}
     >
       {/* Image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-[hsl(220,16%,13%)]">
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-[hsl(30,10%,13%)]">
         {item.imageUrl ? (
           <Image
             src={item.imageUrl}
@@ -113,25 +113,25 @@ export function MenuCard({ item, index = 0 }: MenuCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-3">
+      <div className="p-4.5">
         {/* Name */}
-        <h3 className="font-bold text-white text-sm leading-tight mb-1 line-clamp-1">
+        <h3 className="font-extrabold text-white text-base leading-snug mb-1.5 line-clamp-1">
           {item.name}
         </h3>
 
         {/* Description */}
-        <p className="text-[11px] text-[hsl(220,10%,55%)] leading-relaxed mb-2 line-clamp-2">
+        <p className="text-[12.5px] text-[hsl(30,8%,65%)] leading-relaxed mb-2.5 line-clamp-2">
           {item.description}
         </p>
 
         {/* Tags */}
         {displayTags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
+          <div className="flex flex-wrap gap-1 mb-2.5">
             {displayTags.map((tag) => {
               const config = TAG_BADGE_MAP[tag];
               if (!config) return null;
               return (
-                <Badge key={tag} variant={config.variant} className="text-[10px] px-1.5 py-0 no-min-size">
+                <Badge key={tag} variant={config.variant} className="text-[10px] px-1.5 py-0.5 no-min-size">
                   {config.label}
                 </Badge>
               );
@@ -140,7 +140,7 @@ export function MenuCard({ item, index = 0 }: MenuCardProps) {
         )}
 
         {/* Meta info row */}
-        <div className="flex items-center gap-2 text-[10px] text-[hsl(220,10%,45%)] mb-3">
+        <div className="flex items-center gap-2 text-[10px] text-[hsl(30,6%,50%)] mb-3">
           {item.calories && (
             <span className="flex items-center gap-0.5">
               <Flame className="w-2.5 h-2.5 no-min-size" aria-hidden="true" />
@@ -164,7 +164,7 @@ export function MenuCard({ item, index = 0 }: MenuCardProps) {
         {/* Price + Add to Cart */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-base font-bold text-white">{formatPrice(Number(item.price))}</p>
+            <p className="text-base font-black text-amber-400">{formatPrice(Number(item.price))}</p>
           </div>
 
           {isInCart ? (
