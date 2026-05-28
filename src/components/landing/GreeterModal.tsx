@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UtensilsCrossed, User, Flame, Sparkles } from "lucide-react";
+import { UtensilsCrossed, User, Flame, Sparkles, Check, Heart, ShieldAlert } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
 
@@ -20,7 +20,6 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
   const { sessionId, setSession, displayName } = useCartStore();
 
   useEffect(() => {
-    // If there is no active session or the display name is still default ("Guest" or empty), open onboarding
     if (!sessionId || !displayName || displayName === "Guest") {
       setIsOpen(true);
     }
@@ -29,7 +28,7 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Please enter your name to start dining!");
+      toast.error("Please tell us your name so Chef Zara can welcome you!");
       return;
     }
 
@@ -47,12 +46,10 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
       // 2. Pre-seed the AI preferences if they picked dietary/spice bounds
       if (diet !== "none" || spice !== "medium") {
         try {
-          // Send initial settings to the chat API or save locally in DB
-          // By calling the AI chat init endpoint with a pre-saved message in the body
           const prefData: Record<string, any> = {};
           if (diet !== "none") prefData.dietPreference = diet;
           prefData.spiceLevel = spice;
-          prefData.onboardingCompleted = true; // Complete LLM onboarding step instantly since they set it here!
+          prefData.onboardingCompleted = true; // Skip verbal onboarding step since they did it in the GUI!
           prefData.onboardingStep = 3;
 
           await fetch(`/api/session/${activeSessionId}/cart`, {
@@ -61,7 +58,7 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
             body: JSON.stringify({
               seedPreferences: prefData,
             }),
-          }).catch(err => console.warn("Failed to seed preferences in DB:", err));
+          });
         } catch (prefErr) {
           console.warn("Preferences seeding warning:", prefErr);
         }
@@ -72,7 +69,7 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
       
       toast.success(`Welcome to Table ${tableId}, ${name.trim()}!`, {
         description: "Your live group session and AI Sommelier are active.",
-        duration: 3000,
+        duration: 3500,
       });
 
       setIsOpen(false);
@@ -89,128 +86,153 @@ export function GreeterModal({ tableId }: GreeterModalProps) {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden">
-        {/* Backdrop overlay */}
+        {/* Backdrop overlay with blur */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.7 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/80 backdrop-blur-md"
+          className="absolute inset-0 bg-black/85 backdrop-blur-[14px]"
         />
 
-        {/* Modal Panel */}
+        {/* Modal Panel - Gorgeous glassmorphic reservation card style */}
         <motion.div
-          initial={{ scale: 0.9, y: 20, opacity: 0 }}
+          initial={{ scale: 0.93, y: 30, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
-          exit={{ scale: 0.9, y: 20, opacity: 0 }}
-          transition={{ type: "spring", damping: 25, stiffness: 220 }}
-          className="relative z-50 w-full max-w-md bg-[hsl(220,18%,11%)] border border-[hsla(220,15%,95%,0.12)] p-6 rounded-2xl shadow-2xl overflow-y-auto max-h-[90dvh]"
+          exit={{ scale: 0.93, y: 30, opacity: 0 }}
+          transition={{ type: "spring", damping: 26, stiffness: 220 }}
+          className="relative z-50 w-full max-w-md glass-premium p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-y-auto max-h-[92dvh] border border-white/10"
         >
-          {/* Header logo */}
-          <div className="flex flex-col items-center text-center mb-5.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center shadow-[0_0_24px_hsla(24,95%,53%,0.45)] mb-3 no-min-size">
-              <UtensilsCrossed className="w-6 h-6 text-white" />
+          {/* Subtle neon glowing backdrops for luxury atmosphere */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-44 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent blur-[2px] no-min-size" />
+
+          {/* Header logo & Greeting */}
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center shadow-[0_0_24px_hsla(24,95%,53%,0.5)] mb-3.5 no-min-size">
+              <UtensilsCrossed className="w-6.5 h-6.5 text-white" />
             </div>
-            <h2 className="text-lg font-black text-white leading-tight">Welcome to Spice Garden</h2>
-            <p className="text-[11px] text-[hsl(220,10%,55%)] mt-1.5 max-w-[280px]">
-              AI-Powered Dining experience with real-time ordering and live group sync.
+            <h2 className="text-xl font-black text-white leading-tight tracking-tight">
+              Welcome to <span className="text-gradient-brand">Spice Garden</span>
+            </h2>
+            <p className="text-[10px] text-[hsl(220,10%,55%)] mt-1.5 max-w-[280px] leading-relaxed">
+              Step into an AI-first dining somatic journey. Zara, our AI Sommelier, will personalize your culinary table.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Input Name */}
+          <form onSubmit={handleSubmit} className="space-y-4.5">
+            {/* Input Name with interactive outline */}
             <div>
-              <label htmlFor="diner-name" className="block text-[10px] font-bold uppercase tracking-wider text-[hsl(220,10%,60%)] mb-1.5">
-                Your Display Name
+              <label htmlFor="diner-name" className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-1.5">
+                Diner Name (Required)
               </label>
-              <div className="flex items-center bg-[hsl(220,16%,15%)] border border-[hsla(220,15%,95%,0.08)] rounded-xl focus-within:border-orange-500/40 px-3.5 py-1.5 gap-2.5">
-                <User className="w-4 h-4 text-[hsl(220,10%,50%)] shrink-0 no-min-size" />
+              <div className="input-premium flex items-center px-3.5 py-2 gap-2.5">
+                <User className="w-4 h-4 text-[hsl(220,10%,45%)] shrink-0 no-min-size" />
                 <input
                   id="diner-name"
                   type="text"
-                  placeholder="E.g., Sanjay"
+                  placeholder="Tell us your name..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  maxLength={25}
+                  maxLength={20}
                   disabled={isSubmitting}
-                  className="w-full text-xs text-white bg-transparent outline-none py-1 placeholder-[hsl(220,10%,40%)]"
+                  className="w-full text-xs text-white bg-transparent outline-none py-1.5 placeholder-[hsl(220,10%,40%)] font-medium"
                   required
                 />
               </div>
             </div>
 
-            {/* Diet chips */}
+            {/* Diet chips - transformed into gorgeous tactile selection cards */}
             <div>
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-[hsl(220,10%,60%)] mb-2">
-                Dietary Preference (Optional)
+              <span className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-2">
+                Dietary Preference
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 {[
-                  { id: "none", label: "🍽️ Anything" },
-                  { id: "veg", label: "🥬 Veg Only" },
-                  { id: "non-veg", label: "🍗 Non-Veg" },
-                ].map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => setDiet(option.id as any)}
-                    disabled={isSubmitting}
-                    className={`py-2 px-1 rounded-xl text-[10px] font-bold border transition-all cursor-pointer no-min-size ${
-                      diet === option.id
-                        ? "bg-orange-500/15 border-orange-500 text-orange-400 font-black shadow-sm"
-                        : "bg-[hsl(220,16%,15%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,65%)] hover:bg-[hsl(220,16%,18%)]"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
+                  { id: "none", label: "Anything", emoji: "🍽️", theme: "hover:border-orange-500/30", active: "bg-orange-500/10 border-orange-500/70 text-orange-400" },
+                  { id: "veg", label: "Pure Veg", emoji: "🥬", theme: "hover:border-emerald-500/30", active: "bg-emerald-500/10 border-emerald-500/70 text-emerald-400" },
+                  { id: "non-veg", label: "Non-Veg", emoji: "🍗", theme: "hover:border-rose-500/30", active: "bg-rose-500/10 border-rose-500/70 text-rose-400" },
+                ].map((option) => {
+                  const isActive = diet === option.id;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setDiet(option.id as any)}
+                      disabled={isSubmitting}
+                      className={`relative py-3.5 px-1 rounded-xl text-[10px] font-black border flex flex-col items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer no-min-size shadow-sm select-none ${
+                        isActive 
+                          ? `${option.active} scale-[1.03] shadow-md` 
+                          : `bg-[hsl(220,16%,14%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,60%)] ${option.theme}`
+                      }`}
+                    >
+                      <span className="text-sm">{option.emoji}</span>
+                      <span>{option.label}</span>
+                      
+                      {isActive && (
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-current flex items-center justify-center p-0.5 no-min-size">
+                          <Check className="w-full h-full text-[hsl(220,20%,7%)] stroke-[4]" />
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Spice level chips */}
+            {/* Spice level chips - styled as tactile flame gauges */}
             <div>
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-[hsl(220,10%,60%)] mb-2">
-                Preferred Spice Level (Optional)
+              <span className="block text-[9px] font-extrabold uppercase tracking-wider text-[hsl(220,10%,55%)] mb-2">
+                Preferred Spice Level
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 {[
-                  { id: "mild", label: "Mild" },
-                  { id: "medium", label: "Medium" },
-                  { id: "hot", label: "Hot 🌶️" },
-                ].map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => setSpice(option.id as any)}
-                    disabled={isSubmitting}
-                    className={`py-2 px-1 rounded-xl text-[10px] font-bold border transition-all cursor-pointer no-min-size ${
-                      spice === option.id
-                        ? "bg-orange-500/15 border-orange-500 text-orange-400 font-black shadow-sm"
-                        : "bg-[hsl(220,16%,15%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,65%)] hover:bg-[hsl(220,16%,18%)]"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
+                  { id: "mild", label: "Mild", desc: "No spice", active: "bg-emerald-500/10 border-emerald-500/70 text-emerald-400" },
+                  { id: "medium", label: "Medium", desc: "Balanced", active: "bg-orange-500/10 border-orange-500/70 text-orange-400" },
+                  { id: "hot", label: "Hot 🌶️", desc: "Very tikha", active: "bg-rose-500/10 border-rose-500/70 text-rose-400" },
+                ].map((option) => {
+                  const isActive = spice === option.id;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setSpice(option.id as any)}
+                      disabled={isSubmitting}
+                      className={`relative py-3 px-1 rounded-xl text-[10px] font-black border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer no-min-size shadow-sm select-none ${
+                        isActive 
+                          ? `${option.active} scale-[1.03] shadow-md` 
+                          : "bg-[hsl(220,16%,14%)] border-[hsla(220,15%,95%,0.05)] text-[hsl(220,10%,60%)] hover:border-orange-500/30"
+                      }`}
+                    >
+                      <span>{option.label}</span>
+                      <span className="text-[8px] text-[hsl(220,10%,45%)] mt-0.5 font-medium">{option.desc}</span>
+                      
+                      {isActive && (
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-current flex items-center justify-center p-0.5 no-min-size">
+                          <Check className="w-full h-full text-[hsl(220,20%,7%)] stroke-[4]" />
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Action button */}
+            {/* Submit button with luxury glow and sparkles */}
             <div className="pt-3">
               <button
                 type="submit"
                 disabled={!name.trim() || isSubmitting}
-                className={`w-full py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all text-white ${
+                className={`w-full py-3 rounded-xl font-extrabold text-[12px] flex items-center justify-center gap-2 transition-all duration-300 border border-white/10 ${
                   name.trim() && !isSubmitting
-                    ? "bg-gradient-to-br from-orange-500 to-rose-500 hover:opacity-95 shadow-[0_0_20px_rgba(249,115,22,0.4)] cursor-pointer"
-                    : "bg-[hsl(220,16%,14%)] border border-[hsla(220,15%,95%,0.04)] text-[hsl(220,10%,45%)] cursor-not-allowed"
+                    ? "bg-gradient-to-br from-orange-500 to-rose-500 hover:opacity-95 shadow-[0_0_24px_rgba(249,115,22,0.45)] cursor-pointer text-white"
+                    : "bg-[hsl(220,16%,14%)] border border-[hsla(220,15%,95%,0.04)] text-[hsl(220,10%,40%)] cursor-not-allowed"
                 }`}
               >
                 {isSubmitting ? (
                   <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin no-min-size" />
                 ) : (
                   <>
-                    <Sparkles className="w-4.5 h-4.5" />
-                    <span>Join Dining Table</span>
+                    <Sparkles className="w-4.5 h-4.5 text-white animate-pulse" />
+                    <span>Enter Dining Room</span>
                   </>
                 )}
               </button>
