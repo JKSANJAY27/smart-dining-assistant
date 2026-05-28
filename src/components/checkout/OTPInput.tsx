@@ -1,0 +1,176 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { ShieldCheck, RefreshCw, AlertCircle } from "lucide-react";
+
+interface OTPInputProps {
+  phone: string;
+  onVerify: (otp: string) => Promise<boolean>;
+  onResend: () => Promise<void>;
+}
+
+export function OTPInput({ phone, onVerify, onResend }: OTPInputProps) {
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
+  const [error, setError] = useState<string | null>(null);
+  const [timer, setTimer] = useState<number>(30);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [isResending, setIsResending] = useState<boolean>(false);
+  
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => setTimer((t) => t - 1), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
+
+  const handleChange = (index: number, value: string) => {
+    // Only accept numeric inputs
+    if (value && !/^\d+$/.test(value)) return;
+
+    const newCode = [...code];
+    newCode[index] = value.substring(value.length - 1);
+    setCode(newCode);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    // Submit if all 6 digits are filled
+    const completedCode = newCode.join("");
+    if (completedCode.length === 6) {
+      handleAutoSubmit(completedCode);
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      if (!code[index] && index > 0) {
+        // Move focus to previous input on backspace if current is empty
+        const newCode = [...code];
+        newCode[index - 1] = "";
+        setCode(newCode);
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        const newCode = [...code];
+        newCode[index] = "";
+        setCode(newCode);
+      }
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+    if (!/^\d{6}$/.test(pastedData)) return;
+
+    const digits = pastedData.split("");
+    setCode(digits);
+    inputRefs.current[5]?.focus();
+    handleAutoSubmit(pastedData);
+  };
+
+  const handleAutoSubmit = async (fullOtp: string) => {
+    setIsVerifying(true);
+    setError(null);
+    try {
+      const success = await onVerify(fullOtp);
+      if (!success) {
+        setError("Invalid verification code. Please check and try again.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Verification failed");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendClick = async () => {
+    if (timer > 0 || isResending) return;
+    setIsResending(true);
+    setError(null);
+    try {
+      await onResend();
+      setTimer(30);
+      setCode(Array(6).fill(""));
+      inputRefs.current[0]?.focus();
+    } catch (err: any) {
+      setError(err.message || "Failed to resend code");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4 py-2">
+      <div className="text-center space-y-1.5">
+        <div className="w-10 h-10 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mx-auto mb-2 text-orange-400">
+          <ShieldCheck className="w-5 h-5" />
+        </div>
+        <h3 className="text-sm font-black text-white">Enter Verification Code</h3>
+        <p className="text-xs text-[hsl(220,10%,55%)]">
+          We&apos;ve sent a 6-digit OTP code to verify your phone number ending in <span className="text-white font-bold">{phone.slice(-4)}</span>.
+        </p>
+      </div>
+
+      {/* OTP Code Boxes */}
+      <div className="flex justify-center gap-2 md:gap-3 py-1">
+        {code.map((digit, idx) => (
+          <input
+            key={idx}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleChange(idx, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(idx, e)}
+            onPaste={handlePaste}
+            ref={(el) => {
+              inputRefs.current[idx] = el;
+            }}
+            disabled={isVerifying}
+            className={`w-11 h-12 text-center text-lg font-black text-white bg-[hsl(30,12%,10%)] border ${
+              digit 
+                ? "border-orange-500 shadow-[0_0_12px_rgba(249,115,22,0.2)]" 
+                : "border-white/10"
+            } rounded-xl focus:border-orange-400 focus:shadow-[0_0_12px_rgba(249,115,22,0.35)] outline-none transition-all`}
+          />
+        ))}
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Countdown and Resend */}
+      <div className="text-center text-xs">
+        {timer > 0 ? (
+          <p className="text-[hsl(220,10%,55%)]">
+            Resend code in <span className="text-orange-400 font-extrabold">{timer}s</span>
+          </p>
+        ) : (
+          <button
+            onClick={handleResendClick}
+            disabled={isResending}
+            className="text-orange-400 font-extrabold hover:text-orange-300 transition-colors flex items-center justify-center gap-1.5 mx-auto py-1 cursor-pointer select-none"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isResending ? "animate-spin" : ""}`} />
+            <span>Resend OTP Code</span>
+          </button>
+        )}
+      </div>
+
+      {isVerifying && (
+        <div className="flex items-center justify-center gap-2 py-1 text-xs text-orange-400 font-bold">
+          <div className="w-3.5 h-3.5 rounded-full border border-orange-500/30 border-t-orange-500 animate-spin" />
+          <span>Verifying order...</span>
+        </div>
+      )}
+    </div>
+  );
+}
