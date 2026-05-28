@@ -8,6 +8,8 @@ import { MenuGrid } from "@/components/menu/MenuGrid";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { getTimeOfDay } from "@/lib/utils";
 import { GroupBanner } from "@/components/group/GroupBanner";
+import { ChatDrawer } from "@/components/ai/ChatDrawer";
+import { GreeterModal } from "@/components/landing/GreeterModal";
 
 interface TablePageProps {
   tableId: string;
@@ -146,7 +148,7 @@ export function TablePage({ tableId }: TablePageProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
           className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[hsla(217,91%,60%,0.07)] border border-[hsla(217,91%,60%,0.15)] mb-5"
         >
           <Wifi className="w-4 h-4 text-blue-400 shrink-0 no-min-size" aria-hidden="true" />
@@ -162,7 +164,7 @@ export function TablePage({ tableId }: TablePageProps) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
           >
             <MenuGrid tableId={tableId} />
           </motion.div>
@@ -172,6 +174,12 @@ export function TablePage({ tableId }: TablePageProps) {
 
       {/* Floating Shared Table Cart Drawer */}
       <CartDrawer />
+
+      {/* Floating AI Sommelier Chat Drawer */}
+      <ChatDrawer />
+
+      {/* Diner Identification & Profile Onboarding Overlay */}
+      <GreeterModal tableId={tableId} />
     </div>
   );
 }
