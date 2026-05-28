@@ -6,14 +6,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Plus, Minus, Edit, Check } from "lucide-react";
 import type { CartItem as StoreCartItem } from "@/store/cartStore";
 import { useCartStore } from "@/store/cartStore";
+import { useCartActions } from "@/hooks/useCartActions";
 import { formatPrice } from "@/lib/utils";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface CartItemProps {
   item: StoreCartItem;
 }
 
 export function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, updateInstructions, removeItem } = useCartStore();
+  const { updateQuantity, removeItem } = useCartActions();
+  const { updateInstructions } = useCartStore(); // Keep instructions update on store directly for local input state
   const [instructions, setInstructions] = useState(item.specialInstructions || "");
   const [isEditingInstructions, setIsEditingInstructions] = useState(false);
 
@@ -59,9 +62,23 @@ export function CartItem({ item }: CartItemProps) {
               {formatPrice(Number(item.menuItem.price) * item.quantity)}
             </p>
           </div>
-          <p className="text-[10px] text-[hsl(220,10%,55%)] mt-0.5 capitalize">
-            {item.menuItem.category} · Added by {item.addedBy}
-          </p>
+          
+          <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+            <span className="text-[10px] text-[hsl(220,10%,55%)] capitalize">
+              {item.menuItem.category}
+            </span>
+            <span className="text-[10px] text-[hsl(220,10%,45%)]">•</span>
+            <div className="flex items-center gap-1 bg-[hsla(220,15%,95%,0.04)] px-1.5 py-0.5 rounded-full border border-[hsla(220,15%,95%,0.04)]">
+              <Avatar 
+                size="xs" 
+                fallback={item.addedBy} 
+                className="w-3.5 h-3.5 text-[7px] font-bold" 
+              />
+              <span className="text-[9px] text-[hsl(220,10%,65%)] font-semibold capitalize">
+                {item.addedBy}
+              </span>
+            </div>
+          </div>
 
           {/* Special instructions display */}
           <div className="mt-1.5 flex items-center gap-1.5 min-h-[1.5rem]">

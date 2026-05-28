@@ -7,7 +7,7 @@ import type { MenuItem } from "@prisma/client";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn, formatPrice } from "@/lib/utils";
-import { useCartStore } from "@/store/cartStore";
+import { useCartActions } from "@/hooks/useCartActions";
 
 interface MenuCardProps {
   item: MenuItem;
@@ -25,7 +25,7 @@ const TAG_BADGE_MAP: Record<string, { variant: "brand" | "accent" | "gold" | "ro
 };
 
 export function MenuCard({ item, index = 0 }: MenuCardProps) {
-  const { getItemQuantity, addItem, updateQuantity } = useCartStore();
+  const { getItemQuantity, addItem, updateQuantity } = useCartActions();
   const quantity = getItemQuantity(item.id);
   const isInCart = quantity > 0;
 

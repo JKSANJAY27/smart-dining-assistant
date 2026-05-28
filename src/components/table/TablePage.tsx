@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { MenuGrid } from "@/components/menu/MenuGrid";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { getTimeOfDay } from "@/lib/utils";
+import { GroupBanner } from "@/components/group/GroupBanner";
 
 interface TablePageProps {
   tableId: string;
@@ -137,6 +138,9 @@ export function TablePage({ tableId }: TablePageProps) {
             </div>
           </div>
         </motion.div>
+
+        {/* Group Ordering Sync Banner */}
+        <GroupBanner />
 
         {/* Wi-Fi Banner */}
         <motion.div
