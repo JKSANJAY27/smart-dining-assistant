@@ -82,7 +82,7 @@ export function FloatingAIAssistant({
               animate={{ opacity: 0.3 }}
               exit={{ opacity: 0 }}
               onClick={handleToggle}
-              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-2xs"
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
             />
 
             {/* Slide-Up / Slide-Left Drawer Sheet */}

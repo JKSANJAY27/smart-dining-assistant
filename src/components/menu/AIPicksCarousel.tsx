@@ -80,7 +80,7 @@ export function AIPicksCarousel({ items, taglines, title, subtitle }: AIPicksCar
 
                 {/* Spicy Tag */}
                 {item.isSpicy && (
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-extrabold text-orange-600 border border-orange-100 flex items-center gap-1 shadow-2xs">
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-[2px] px-2.5 py-1 rounded-full text-[10px] font-extrabold text-orange-600 border border-orange-100 flex items-center gap-1 shadow-2xs">
                     <span>🌶️</span>
                     <span>SPICY</span>
                   </div>
@@ -88,7 +88,7 @@ export function AIPicksCarousel({ items, taglines, title, subtitle }: AIPicksCar
 
                 {/* Rating Badge */}
                 {item.popularScore > 0.8 && (
-                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full text-[11px] font-black text-gray-800 border border-amber-100 flex items-center gap-1 shadow-2xs">
+                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-[2px] px-2.5 py-1 rounded-full text-[11px] font-black text-gray-800 border border-amber-100 flex items-center gap-1 shadow-2xs">
                     <span className="text-amber-500 font-extrabold">★</span>
                     <span>{(item.popularScore * 5).toFixed(1)}</span>
                   </div>

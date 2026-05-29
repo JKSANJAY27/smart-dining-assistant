@@ -44,8 +44,9 @@ export function TablePage({ tableId }: TablePageProps) {
   // Memoize latest recommended items from Zara's chat history to dynamically morph the menu grid carousel
   const aiRecommendedItems = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].role === "ASSISTANT" && messages[i].metadata?.recommendedItems?.length > 0) {
-        return messages[i].metadata.recommendedItems;
+      const msg = messages[i];
+      if (msg.role === "ASSISTANT" && msg.metadata?.recommendedItems && msg.metadata.recommendedItems.length > 0) {
+        return msg.metadata.recommendedItems;
       }
     }
     return [];

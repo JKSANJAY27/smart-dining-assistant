@@ -98,7 +98,7 @@ export function MenuCard({ item, index = 0, tagline }: MenuCardProps) {
 
         {/* Popularity score — top-right */}
         {item.popularScore > 0.85 && (
-          <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full shadow-xs border border-amber-100">
+          <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/95 backdrop-blur-[2px] px-2.5 py-1 rounded-full shadow-xs border border-amber-100">
             <Star className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="currentColor" />
             <span className="text-[11px] font-black text-gray-800 leading-none">
               {(item.popularScore * 5).toFixed(1)}

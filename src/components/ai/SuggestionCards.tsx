@@ -47,7 +47,7 @@ export function SuggestionCards({ items }: SuggestionCardsProps) {
                 </div>
               )}
               {/* Veg / Non-veg indicator absolute badge */}
-              <div className="absolute top-2.5 left-2.5 z-10 bg-white/95 backdrop-blur-xs border border-stone-200/50 px-2 py-0.5 rounded-full flex items-center gap-1.5 no-min-size shadow-2xs">
+              <div className="absolute top-2.5 left-2.5 z-10 bg-white/95 backdrop-blur-[2px] border border-stone-200/50 px-2 py-0.5 rounded-full flex items-center gap-1.5 no-min-size shadow-2xs">
                 <span
                   className={`w-2.5 h-2.5 rounded-full no-min-size ${
                     item.isVeg ? "bg-emerald-500" : "bg-rose-500"
